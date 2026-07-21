@@ -18,15 +18,14 @@ def salva_timbratura(nome_bagnino, tipo_operazione):
     else:
         nuovo_dato.to_csv(DB_FILE, index=False)
         
-    st.success(f"✅ {tipo_operazione} registrato con successo per {nome_bagnino} alle ore {orario_attuale.split()}!")
+    st.success(f"✅ {tipo_operazione} registrato con successo per {nome_bagnino} alle ore {orario_attuale.split()[1]}!")
 
-# Recupera il token dall'URL del QR Code
+# Controllo del gettone di sicurezza nell'URL dello smartphone
 query_params = st.query_params
 token_ricevuto = query_params.get("token", None)
 
 totp = pyotp.TOTP(CHIAVE_SEGRETA_TOTP, interval=30)
 
-# CONTROLLO REQUISITO QR CODE
 if token_ricevuto and totp.verify(token_ricevuto, valid_window=1):
     st.title("🏖️ Registro Presenze Stabilimento")
     st.success("📍 Presenza in segreteria verificata tramite QR Code attivo.")
@@ -44,35 +43,28 @@ if token_ricevuto and totp.verify(token_ricevuto, valid_window=1):
     with col2:
         if st.button("🛑 REGISTRA USCITA", use_container_width=True):
             salva_timbratura(bagnino_selezionato, "USCITA")
-
 else:
-    # SE APRI L'APP SENZA QR CODE, MOSTRA LA SCHERMATA DI ACCESSO AMMINISTRATORE
     st.title("🔐 Area Riservata Direzione")
     st.warning("Per timbrare devi inquadrare il QR Code in segreteria.")
-    
     st.write("---")
     st.subheader("Visualizza Resoconto Mensile (Solo Direzione)")
     
-    # Inserisci qui la tua password per scaricare l'Excel
     password_inserita = st.text_input("Inserisci la password amministratore:", type="password")
     
-    if password_inserita == "Spiaggia2026": # Puoi cambiare questa password quando vuoi
+    if password_inserita == "Spiaggia2026":
         st.success("🔓 Accesso consentito!")
-        
         if os.path.exists(DB_FILE):
             df = pd.read_csv(DB_FILE)
-            
-            # Mostra la tabella delle ore direttamente a schermo
             st.write("### 📅 Tutte le timbrature registrate:")
             st.dataframe(df, use_container_width=True)
             
-            # Converti il file per farlo scaricare in Excel/CSV con un click
             csv = df.to_csv(index=False).encode('utf-8')
             st.download_button(
-                label="📥 SCARICA FILE ECCEL / CSV",
+                label="📥 SCARICA FILE EXCEL / CSV",
                 data=csv,
                 file_name=f"resoconto_bagnini_{datetime.now().strftime('%m_%Y')}.csv",
                 mime='text/csv',
             )
         else:
             st.info("Nessuna timbratura presente nel database al momento.")
+
