@@ -11,7 +11,8 @@ st.write("Inquadra questo QR Code con la fotocamera del tuo cellulare per effett
 # Questa chiave deve essere IDENTICA a quella configurata nell'applicazione online
 CHIAVE_SEGRETA_TOTP = "JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP" 
 
-# URL definitivo della tua applicazione che abbiamo appena attivato
+URL_BASE_APP = "https://streamlit.app"
+
 URL_BASE_APP = "https://streamlit.app"
 
 # Inizializza l'algoritmo del codice a tempo (scade ogni 30 secondi)
