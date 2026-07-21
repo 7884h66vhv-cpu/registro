@@ -21,8 +21,8 @@ codice_attuale = totp.now()
 # Costruisce il link sicuro temporaneo che verrà letto dallo smartphone
 url_dinamico = f"{URL_BASE_APP}/?token={codice_attuale}"
 
-# Genera l'immagine del QR Code tramite le API di Google Charts
-url_qr_code = f"https://googleapis.com{url_dinamico}"
+# NUOVO SERVER QR CODE (Sostituito Google con QuickChart)
+url_qr_code = f"https://quickchart.io/qr?text={url_dinamico}&size=300"
 
 # Mostra il QR Code a tutto schermo sul monitor dell'ufficio
 st.image(url_qr_code, caption="Il codice si aggiorna automaticamente ogni 30 secondi", use_container_width=False)
